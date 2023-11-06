@@ -4,13 +4,14 @@ import authRouter from "./authRoute";
 import docsRouter from "./docsRoute";
 import userRouter from "./userRoutes";
 import categoryRouter from "./categoryRoute";
+import productRouter from "./productRoute";
 
 const appRouter = Router();
 
 // all routes
 const appRoutes = [
   {
-    path: "/auth",
+    path: "/authorization",
     router: authRouter,
   },
   {
@@ -24,6 +25,10 @@ const appRoutes = [
   {
     path: "/category",
     router: categoryRouter,
+  },
+  {
+    path: "/product",
+    router: productRouter,
   },
 ];
 

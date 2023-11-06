@@ -11,6 +11,7 @@ import { sign } from "../util/jwt";
 import { generateOTP, verifyOTP } from "../util/otp";
 import { sendOTP } from "../helpers/mailHelper";
 import { ApiError } from "../util/ApiError";
+import { ApiResponse } from "customDefinition";
 const omitData = ["password"];
 
 export const registerUser = async (
@@ -28,13 +29,12 @@ export const registerUser = async (
     }
     user = await createUser(user);
     const userData = omit(user?.toJSON(), omitData);
-    const accessToken = sign({ ...userData });
-    return res.status(200).json({
-      data: userData,
-      error: false,
-      accessToken: accessToken,
-      msg: "User registered successfully",
-    });
+    /* const accessToken = sign({ ...userData }); */
+    const apiResponse: ApiResponse = {
+      statusCode: 1,
+      message: "User registered successfully",
+    };
+    return res.status(200).json(apiResponse);
   } catch (err) {
     next(err);
   }
@@ -59,11 +59,14 @@ export const loginUser = async (
     }
     const userData = omit(user?.toJSON(), omitData);
     const accessToken = sign({ ...userData });
-
+    const apiResponse: ApiResponse = {
+      statusCode: 1,
+      message: "Login successful",
+    };
     return res.status(200).json({
-      data: userData,
-      access_token: accessToken,
-      error: false,
+      user: userData,
+      accessToken: accessToken,
+      ...apiResponse,
     });
   } catch (err) {
     next(err);

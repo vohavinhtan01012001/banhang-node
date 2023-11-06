@@ -13,3 +13,8 @@ export type ControllerFunction = (
   res: Response,
   next: NextFunction
 ) => void;
+
+export interface ApiResponse {
+  statusCode: number;
+  message: string;
+}

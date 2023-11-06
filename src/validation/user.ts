@@ -5,14 +5,14 @@ export const registerSchema = Joi.object({
   email: Joi.string().email().required(),
   phone: Joi.string().min(10),
   address: Joi.string(),
-  password: Joi.string().min(8).required(),
+  password: Joi.string().min(6).required(),
   /* confirm_password: Joi.string().min(8),
   country_code: Joi.string(), */
 });
 
 export const loginSchema = Joi.object({
   email: Joi.string().email().required(),
-  password: Joi.string().min(8).required(),
+  password: Joi.string().min(6).required(),
 });
 
 export const updateSchema = Joi.object({

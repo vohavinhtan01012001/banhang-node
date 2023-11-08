@@ -8,6 +8,7 @@ import {
   addCategory,
   categoryById,
   categoryUpdate,
+  desCategory,
   listCategory,
 } from "../../controllers/category";
 
@@ -23,10 +24,12 @@ categoryRouter.get("/get-all", listCategory);
 categoryRouter.get("/:id", categoryById);
 
 categoryRouter.patch(
-  "/update-category",
+  "/update-category/:id",
   validateRequest(updateCategorySchema),
   categoryUpdate
 );
+
+categoryRouter.delete("/delete/:id", desCategory);
 
 export default categoryRouter;
 
@@ -106,10 +109,17 @@ export default categoryRouter;
 
 /**
  * @swagger
- * /v1/category/update-category:
+ * /v1/category/update-category/{id}:
  *   patch:
  *     summary: update category
  *     tags: [Category]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the category to get
  *     requestBody:
  *       required: true
  *       content:
@@ -131,6 +141,28 @@ export default categoryRouter;
  *               id: 1
  *               name: "Short"
  *               description: "short description"
+ *     responses:
+ *       "201":
+ *         description: OK
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+/**
+ * @swagger
+ * /v1/category/delete/{id}:
+ *   delete:
+ *     summary: delete a category
+ *     tags: [Category]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the category to get
  *     responses:
  *       "201":
  *         description: OK

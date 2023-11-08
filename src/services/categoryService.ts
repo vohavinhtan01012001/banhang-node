@@ -10,16 +10,47 @@ export const getAllCategory = async () => {
   return catgory;
 };
 
-export const getByIdCategory = async (payload: any) => {
-  const catgory = await Category.findByPk(payload);
-  return catgory;
+export const getByIdCategory = async (payload: number) => {
+  if (!payload) {
+    throw new Error("Please product id to find product");
+  }
+  if (payload && isNaN(payload)) {
+    throw new Error("Invalid product id");
+  }
+  const category = await Category.findByPk(payload);
+  if (!category) {
+    throw new Error("Category not found");
+  }
+  return category;
 };
 
-export const updateCategory = async (payload: any) => {
-  const categoryById = await Category.findByPk(payload.id);
-  let upCategory = null;
-  if (categoryById) {
-    upCategory = await categoryById.update(payload);
+export const updateCategory = async (category: any, id: number) => {
+  if (!category) {
+    throw new Error("Please provide category data to update");
   }
-  return upCategory;
+  const categoryById = await Category.findOne({ where: { id: id } });
+  if (!categoryById) {
+    throw new Error("category not found");
+  }
+  Category.update(category, {
+    where: { id: id },
+  });
+  const updatedProductData = { ...category, id: id };
+  return updatedProductData;
+};
+
+export const deleteCategory = async (categoryId: number) => {
+  if (!categoryId) {
+    throw new Error("Please category id to delete");
+  }
+  if (categoryId && isNaN(categoryId)) {
+    throw new Error("Invalid category id");
+  }
+  const categoryById = await Category.findOne({ where: { id: categoryId } });
+  if (!categoryById) {
+    throw new Error("Product not found");
+  }
+  return Category.destroy({
+    where: { id: categoryId },
+  });
 };

@@ -239,7 +239,7 @@ export default productRouter;
  *         required: true
  *         schema:
  *           type: integer
- *         description: ID of the category to get
+ *         description: ID of the product to get
  *     responses:
  *       "201":
  *         description: OK

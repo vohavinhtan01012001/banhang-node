@@ -2,10 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../util/ApiError";
 import {
   createCategory,
+  deleteCategory,
   getAllCategory,
   getByIdCategory,
   updateCategory,
 } from "../services/categoryService";
+import { ApiResponse } from "customDefinition";
+import Category from "../models/Category";
 
 export const addCategory = async (
   req: Request,
@@ -14,10 +17,12 @@ export const addCategory = async (
 ) => {
   try {
     const category = req.body;
-    await createCategory(category);
-    res.status(200).json({
-      msg: "Category created successfully",
-    });
+    const createdCategory = await createCategory(category);
+    const response: ApiResponse = {
+      statusCode: 1,
+      message: "Category created successfully",
+    };
+    res.status(200).json({ status: response, category: createdCategory });
   } catch (err) {
     next(err);
   }
@@ -44,7 +49,8 @@ export const categoryById = async (
   next: NextFunction
 ) => {
   try {
-    const categoryId = await getByIdCategory(req.params.id);
+    const id = parseInt(req.params.id);
+    const categoryId = await getByIdCategory(id);
     res.status(200).json({
       category: categoryId,
     });
@@ -59,12 +65,36 @@ export const categoryUpdate = async (
   next: NextFunction
 ) => {
   try {
-    const category = await updateCategory(req.body);
-    if (category == null) {
-      throw new ApiError(404, "Category not found");
-    }
+    const id = parseInt(req.params.id);
+    const category = await updateCategory(req.body, id);
+    const response: ApiResponse = {
+      statusCode: 1,
+      message: "Category updated successfully!",
+    };
     res.status(200).json({
-      msg: "Category updated successfully",
+      status: response,
+      category: category,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const desCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id);
+    const category = await deleteCategory(id);
+    const response: ApiResponse = {
+      statusCode: 1,
+      message: "Category delete successfully!",
+    };
+    res.status(200).json({
+      category: category,
+      status: response,
     });
   } catch (error) {
     next(error);

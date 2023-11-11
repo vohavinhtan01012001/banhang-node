@@ -1,15 +1,3 @@
-## Manual Installation
-
-steps:
-
-Clone the repo:
-
-```sh
-git clone --depth 1 https://github.com/nabadeep25/typescript-node-sequelize-boilerplate.git  foldername
-
-cd folder name
-npx rimraf ./.git
-```
 
 Install the dependencies:
 

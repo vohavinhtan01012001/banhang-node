@@ -7,10 +7,24 @@ class Product extends Model {
   public name!: string;
   public description!: string;
   public price!: number;
+  public priceReduced!: number;
+  public quantity!: number;
+  public gender!: number;
+  public status!: number;
+  public image!: string;
+  public image2!: string;
+  public image3!: string;
+  public image4!: string;
   public categoryId!: number; // Thêm cột categoryId để đại diện cho mối quan hệ một-nhiều
 
   public readonly created_at!: Date;
   public readonly last_updated!: Date;
+
+  static associate(models: any) {
+    Product.belongsTo(models.Category, {
+      onDelete: "CASCADE",
+    });
+  }
 }
 
 Product.init(
@@ -78,10 +92,12 @@ Product.init(
   },
   {
     sequelize: sequelizeConnection,
+    modelName: "Product",
     tableName: "products",
     createdAt: "created_at",
     updatedAt: "last_updated",
   }
 );
+Product.belongsTo(Category, { foreignKey: "categoryId" });
 
 export default Product;

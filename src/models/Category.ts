@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 import sequelizeConnection from "../db/connection";
 import Product from "./Product";
 
@@ -10,6 +10,13 @@ class Category extends Model {
   // timestamps!
   public readonly created_at!: Date;
   public readonly last_updated!: Date;
+
+  static associate(models: any) {
+    Category.hasMany(models.Product, {
+      foreignKey: "categoryId",
+      onDelete: "CASCADE",
+    });
+  }
 }
 
 Category.init(
@@ -30,10 +37,12 @@ Category.init(
   },
   {
     sequelize: sequelizeConnection,
+    modelName: "Category",
     tableName: "categories",
     createdAt: "created_at",
     updatedAt: "last_updated",
   }
 );
-Category.hasMany(Product, { as: "Product", foreignKey: "categoryId" });
+
+// Category.hasMany(Product, { foreignKey: "categoryId" });
 export default Category;

@@ -6,7 +6,6 @@ export const createCategorySchema = Joi.object({
 });
 
 export const updateCategorySchema = Joi.object({
-  id: Joi.number(),
   name: Joi.string().required(),
   description: Joi.string(),
 });

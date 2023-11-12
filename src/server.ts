@@ -1,6 +1,13 @@
 import errorHandler from "errorhandler";
 import app from "./app";
+import { v2 as cloudinary } from "cloudinary";
 
+cloudinary.config({
+  cloud_name: process.env.COULD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+  secure: true,
+});
 /**
  * Error Handler. Provides full stack
  */

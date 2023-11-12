@@ -28,8 +28,6 @@ export const registerUser = async (
       throw new ApiError(400, "Email is alredy used");
     }
     user = await createUser(user);
-    const userData = omit(user?.toJSON(), omitData);
-    /* const accessToken = sign({ ...userData }); */
     const apiResponse: ApiResponse = {
       statusCode: 1,
       message: "User registered successfully",
@@ -40,38 +38,39 @@ export const registerUser = async (
   }
 };
 
-export const loginUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { email, password } = req.body;
+  export const loginUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const { email, password } = req.body;
 
-    const user = await findOneUser({ email });
-    if (!user) {
-      throw new ApiError(400, "Email id is incorrect");
-    }
+      const user = await findOneUser({ email });
+      if (!user) {
+        throw new ApiError(400, "Email id is incorrect");
+      }
 
-    const validPassword = await validatePassword(user.email, password);
-    if (!validPassword) {
-      throw new ApiError(400, "Password is incorrect");
+      const validPassword = await validatePassword(user.email, password);
+      if (!validPassword) {
+        throw new ApiError(400, "Password is incorrect");
+      }
+
+      const userData = omit(user?.toJSON(), omitData);
+      const accessToken = sign({ ...userData });
+      const apiResponse: ApiResponse = {
+        statusCode: 1,
+        message: "Login successful",
+      };
+      return res.status(200).json({
+        user: userData,
+        accessToken: accessToken,
+        ...apiResponse,
+      });
+    } catch (err) {
+      next(err);
     }
-    const userData = omit(user?.toJSON(), omitData);
-    const accessToken = sign({ ...userData });
-    const apiResponse: ApiResponse = {
-      statusCode: 1,
-      message: "Login successful",
-    };
-    return res.status(200).json({
-      user: userData,
-      accessToken: accessToken,
-      ...apiResponse,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+  };
 
 export const forgotPassword = async (
   req: Request,

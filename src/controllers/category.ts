@@ -8,7 +8,6 @@ import {
   updateCategory,
 } from "../services/categoryService";
 import { ApiResponse } from "customDefinition";
-import Category from "../models/Category";
 
 export const addCategory = async (
   req: Request,

@@ -1,12 +1,32 @@
 import Product from "../models/Product";
+import Category from "../models/Category";
+import { CreateProduct } from "../types/productType";
+import { Optional } from "sequelize";
 
-export const createProduct = async (payload: any) => {
-  const product = await Product.create(payload);
-  return product;
+export const createProduct = async (payload: Product) => {
+  const convertedPayload: any = {
+    ...payload,
+    price: Number(payload.price),
+    priceReduced: Number(payload.priceReduced),
+    quantity: Number(payload.quantity),
+    gender: Number(payload.gender),
+    status: Number(payload.status),
+    categoryId: Number(payload.categoryId),
+  };
+
+  try {
+    const product = await Product.create(convertedPayload);
+
+    return product;
+  } catch (error) {
+    console.error("Error creating product:", error);
+    throw error; // Chuyển lại lỗi để xử lý ở lớp gọi
+  }
 };
-
 export const getAllProduct = async () => {
-  const product = await Product.findAll();
+  const product = await Product.findAll({
+    include: [{ model: Category, as: "Category" }],
+  });
   return product;
 };
 
@@ -24,7 +44,7 @@ export const getByIdProduct = async (productId: number) => {
   return product;
 };
 
-export const updateProduct = async (product: any, id: number) => {
+export const updateProduct = async (product: Product, id: number) => {
   if (!product) {
     throw new Error("Please provide product data to update");
   }

@@ -1,4 +1,6 @@
+import { EditCategory } from "categoryType";
 import Category from "../models/Category";
+import Product from "../models/Product";
 
 export const createCategory = async (payload: any) => {
   const category = await Category.create(payload);
@@ -6,10 +8,11 @@ export const createCategory = async (payload: any) => {
 };
 
 export const getAllCategory = async () => {
-  const catgory = await Category.findAll();
-  return catgory;
+  const categories = await Category.findAll({
+    include: [],
+  });
+  return categories;
 };
-
 export const getByIdCategory = async (payload: number) => {
   if (!payload) {
     throw new Error("Please product id to find product");
@@ -24,7 +27,7 @@ export const getByIdCategory = async (payload: number) => {
   return category;
 };
 
-export const updateCategory = async (category: any, id: number) => {
+export const updateCategory = async (category: Category, id: number) => {
   if (!category) {
     throw new Error("Please provide category data to update");
   }

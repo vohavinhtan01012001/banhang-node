@@ -74,7 +74,7 @@ export default categoryRouter;
 
 /**
  * @swagger
- * /v1/category/getCategoryList:
+ * /v1/category/get-all:
  *   get:
  *     summary: get all categories
  *     tags: [Category]

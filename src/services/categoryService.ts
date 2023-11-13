@@ -8,11 +8,10 @@ export const createCategory = async (payload: any) => {
 };
 
 export const getAllCategory = async () => {
-  const categories = await Category.findAll({
-    include: [],
-  });
+  const categories = await Category.findAll({ include: [Product] });
   return categories;
 };
+
 export const getByIdCategory = async (payload: number) => {
   if (!payload) {
     throw new Error("Please product id to find product");

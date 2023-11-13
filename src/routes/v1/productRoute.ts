@@ -30,7 +30,7 @@ productRouter.post(
 
 productRouter.get("/get-all", listProduct);
 
-productRouter.get("/:id", productById);
+productRouter.get("/showById/:id", productById);
 
 productRouter.patch(
   "/update-product/:id",

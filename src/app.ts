@@ -6,7 +6,6 @@ import { customRequest } from "./types/customDefinition";
 import { deserializeUser } from "./middleware";
 import appRouter from "./routes/v1";
 import { errorHandler } from "./middleware/error";
-
 // Create Express server
 const app = express();
 
@@ -14,7 +13,7 @@ app.use(logger("dev"));
 app.set("port", process.env.PORT || 3000);
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 app.use(deserializeUser);

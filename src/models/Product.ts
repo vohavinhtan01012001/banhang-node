@@ -20,11 +20,12 @@ class Product extends Model {
   public readonly created_at!: Date;
   public readonly last_updated!: Date;
 
-  static associate(models: any) {
+  /* static associate(models: any) {
     Product.belongsTo(models.Category, {
-      onDelete: "CASCADE",
+      foreignKey: "categoryId",
+      as: "Category",
     });
-  }
+  } */
 }
 
 Product.init(
@@ -98,6 +99,8 @@ Product.init(
     updatedAt: "last_updated",
   }
 );
+//relationships
 Product.belongsTo(Category, { foreignKey: "categoryId" });
+Category.hasMany(Product, { sourceKey: "id" });
 
 export default Product;

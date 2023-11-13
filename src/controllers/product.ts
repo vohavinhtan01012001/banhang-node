@@ -9,7 +9,6 @@ import {
 } from "../services/productService";
 import { ApiResponse } from "customDefinition";
 import { v2 as cloudinary } from "cloudinary";
-import { CreateProduct } from "productType";
 
 export const addProduct = async (
   req: Request,
@@ -61,44 +60,10 @@ export const addProduct = async (
       image3: imageUrls[2],
       image4: imageUrls[3],
     };
-    // const body = req.body;
-    // const {
-    //   name,
-    //   price,
-    //   priceReduced,
-    //   quantity,
-    //   gender,
-    //   status,
-    //   categoryId,
-    //   description,
-    // }: {
-    //   name: string;
-    //   price: number;
-    //   priceReduced: number;
-    //   quantity: number;
-    //   gender: number;
-    //   status: number;
-    //   categoryId: number;
-    //   description: string;
-    // } = body;
 
-    // console.log(body);
-
-    // const product = {
-    //   name,
-    //   price,
-    //   priceReduced,
-    //   quantity,
-    //   gender,
-    //   status,
-    //   categoryId,
-    //   description,
-    //   ...listImages,
-    // };
-    // console.log(product);
     const product = { ...req.body, ...listImages };
     const createdProduct = await createProduct(product);
-    
+
     const response: ApiResponse = {
       statusCode: 1,
       message: "Product created successfully",
@@ -164,11 +129,12 @@ export const desProduct = async (
 ) => {
   try {
     const id = parseInt(req.params.id);
-    const product = await deleteProduct(id);
-    res.status(200).json({
-      product: product,
-      msg: "Product delete successfully",
-    });
+    await deleteProduct(id);
+    const response: ApiResponse = {
+      statusCode: 1,
+      message: "Product delete successfully",
+    };
+    res.status(200).json(response);
   } catch (error) {
     next(error);
   }

@@ -11,12 +11,6 @@ class Category extends Model {
   public readonly created_at!: Date;
   public readonly last_updated!: Date;
 
-  static associate(models: any) {
-    Category.hasMany(models.Product, {
-      foreignKey: "categoryId",
-      onDelete: "CASCADE",
-    });
-  }
 }
 
 Category.init(
@@ -44,5 +38,5 @@ Category.init(
   }
 );
 
-// Category.hasMany(Product, { foreignKey: "categoryId" });
+
 export default Category;

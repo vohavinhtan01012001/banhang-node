@@ -3,29 +3,20 @@ import Category from "../models/Category";
 import { CreateProduct } from "../types/productType";
 import { Optional } from "sequelize";
 
-export const createProduct = async (payload: Product) => {
-  const convertedPayload: any = {
-    ...payload,
-    price: Number(payload.price),
-    priceReduced: Number(payload.priceReduced),
-    quantity: Number(payload.quantity),
-    gender: Number(payload.gender),
-    status: Number(payload.status),
-    categoryId: Number(payload.categoryId),
-  };
-
+export const createProduct = async (payload: any) => {
   try {
-    const product = await Product.create(convertedPayload);
-
+    const product = await Product.create(payload);
     return product;
   } catch (error) {
     console.error("Error creating product:", error);
-    throw error; // Chuyển lại lỗi để xử lý ở lớp gọi
+    throw error;
   }
 };
 export const getAllProduct = async () => {
   const product = await Product.findAll({
-    include: [{ model: Category, as: "Category" }],
+    include: [
+      { model: Category }
+    ],
   });
   return product;
 };

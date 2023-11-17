@@ -19,13 +19,6 @@ class Product extends Model {
 
   public readonly created_at!: Date;
   public readonly last_updated!: Date;
-
-  /* static associate(models: any) {
-    Product.belongsTo(models.Category, {
-      foreignKey: "categoryId",
-      as: "Category",
-    });
-  } */
 }
 
 Product.init(
@@ -84,11 +77,13 @@ Product.init(
     },
     categoryId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true, // Change to allowNull: true for the optional association
       references: {
-        model: "categories", // Tham chiếu đến bảng categories
-        key: "id", // Tham chiếu đến cột id trong bảng categories
+        model: Category, // Reference the Category model
+        key: "id", // Reference the id column in the Category model
       },
+      onUpdate: "CASCADE", // Define the behavior on update
+      onDelete: "SET NULL", // Define the behavior on delete
     },
   },
   {
@@ -99,8 +94,8 @@ Product.init(
     updatedAt: "last_updated",
   }
 );
-//relationships
-Product.belongsTo(Category, { foreignKey: "categoryId" });
-Category.hasMany(Product, { sourceKey: "id" });
+// Define the association
+Product.belongsTo(Category, { foreignKey: "categoryId", targetKey: "id" });
+Category.hasMany(Product, { foreignKey: "categoryId", sourceKey: "id" });
 
 export default Product;

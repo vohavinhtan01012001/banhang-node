@@ -1,7 +1,5 @@
 import Product from "../models/Product";
 import Category from "../models/Category";
-import { CreateProduct } from "../types/productType";
-import { Optional } from "sequelize";
 
 export const createProduct = async (payload: any) => {
   try {
@@ -14,9 +12,7 @@ export const createProduct = async (payload: any) => {
 };
 export const getAllProduct = async () => {
   const product = await Product.findAll({
-    include: [
-      { model: Category }
-    ],
+    include: [{ model: Category }],
   });
   return product;
 };
@@ -35,7 +31,7 @@ export const getByIdProduct = async (productId: number) => {
   return product;
 };
 
-export const updateProduct = async (product: Product, id: number) => {
+export const updateProduct = async (product: any, id: number) => {
   if (!product) {
     throw new Error("Please provide product data to update");
   }

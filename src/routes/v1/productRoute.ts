@@ -1,16 +1,18 @@
 import { Router } from "express";
-import validateRequest from "../../middleware/validateRequest";
 import {
   addProduct,
   desProduct,
   listProduct,
   productById,
   productUpdate,
+  updateStatusProduct,
 } from "../../controllers/product";
 import {
   createProductSchema,
   updateProductSchema,
+  updateStatusProductSchema,
 } from "../../validation/product";
+import validateRequest from "../../middleware/validateRequest";
 import multer from "multer";
 
 const productRouter = Router();
@@ -18,13 +20,13 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 productRouter.post(
   "/add-product",
-  /* validateRequest(createProductSchema), */
   upload.fields([
     { name: "image1", maxCount: 1 },
     { name: "image2", maxCount: 1 },
     { name: "image3", maxCount: 1 },
     { name: "image4", maxCount: 1 },
   ]),
+  /* validateRequestProduct(createProductSchema), */
   addProduct
 );
 
@@ -44,6 +46,11 @@ productRouter.patch(
 );
 
 productRouter.delete("/delete/:id", desProduct);
+productRouter.patch(
+  "/update-status/:id",
+  validateRequest(updateStatusProductSchema),
+  updateStatusProduct
+);
 
 export default productRouter;
 

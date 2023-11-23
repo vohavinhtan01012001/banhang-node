@@ -39,7 +39,7 @@ export const updateProduct = async (product: any, id: number) => {
   if (!productById) {
     throw new Error("Product not found");
   }
-  Product.update(product, {
+  await Product.update(product, {
     where: { id: id },
   });
   const updatedProductData = { ...product, id: id };
@@ -60,4 +60,28 @@ export const deleteProduct = async (productId: number) => {
   return Product.destroy({
     where: { id: productId },
   });
+};
+
+export const updateStatusProductService = async (
+  productId: number,
+  status: number
+) => {
+  try {
+    if (!productId) {
+      throw new Error("Product ID not found");
+    }
+    if (status == 0 || status == 1) {
+      await Product.update({ status: status }, { where: { id: productId } });
+      const updatedProduct = await Product.findOne({
+        where: { id: productId },
+      });
+      if (!updatedProduct) {
+        throw new Error("Product not found after update");
+      }
+      return updatedProduct;
+    }
+    throw new Error("Product status not found");
+  } catch (error) {
+    throw error;
+  }
 };

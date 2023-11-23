@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import sequelizeConnection from "../db/connection";
 import Category from "./Category";
+import Promotion from "./Promotion";
 
 class Product extends Model {
   public id!: number;
@@ -85,6 +86,16 @@ Product.init(
       onUpdate: "CASCADE", // Define the behavior on update
       onDelete: "SET NULL", // Define the behavior on delete
     },
+    promotionId: {
+      type: DataTypes.INTEGER,
+      allowNull: true, // Change to allowNull: true for the optional association
+      references: {
+        model: Promotion, // Reference the Category model
+        key: "id", // Reference the id column in the Category model
+      },
+      onUpdate: "CASCADE", // Define the behavior on update
+      onDelete: "SET NULL", // Define the behavior on delete
+    },
   },
   {
     sequelize: sequelizeConnection,
@@ -97,5 +108,6 @@ Product.init(
 // Define the association
 Product.belongsTo(Category, { foreignKey: "categoryId", targetKey: "id" });
 Category.hasMany(Product, { foreignKey: "categoryId", sourceKey: "id" });
+Promotion.hasMany(Product, { foreignKey: "promotionId", sourceKey: "id" });
 
 export default Product;

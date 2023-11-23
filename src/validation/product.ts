@@ -11,7 +11,7 @@ export const createProductSchema = Joi.object({
   image3: Joi.required(),
   image4: Joi.required(),
   gender: Joi.number().required(),
-  status: Joi.number().required(),
+  status: Joi.number().valid(0, 1).required(),
   categoryId: Joi.number().required(),
 });
 
@@ -26,6 +26,11 @@ export const updateProductSchema = Joi.object({
   image3: Joi.string().required(),
   image4: Joi.string().required(),
   gender: Joi.number().required(),
-  status: Joi.number().required(),
+  status: Joi.number().valid(0, 1).required(),
   categoryId: Joi.number().required(),
+});
+
+
+export const updateStatusProductSchema = Joi.object({
+  status: Joi.number().valid(0, 1).required(),
 });

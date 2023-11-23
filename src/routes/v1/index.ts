@@ -5,6 +5,7 @@ import docsRouter from "./docsRoute";
 import userRouter from "./userRoutes";
 import categoryRouter from "./categoryRoute";
 import productRouter from "./productRoute";
+import promotionRouter from "./promotionRoute";
 
 const appRouter = Router();
 
@@ -29,6 +30,10 @@ const appRoutes = [
   {
     path: "/product",
     router: productRouter,
+  },
+  {
+    path: "/promotion",
+    router: promotionRouter,
   },
 ];
 

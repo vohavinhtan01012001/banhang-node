@@ -5,6 +5,7 @@ import {
   deleteProduct,
   getAllProduct,
   getByIdProduct,
+  updateStatusProductService,
 } from "../services/productService";
 import { ApiResponse } from "customDefinition";
 import { v2 as cloudinary } from "cloudinary";
@@ -18,6 +19,7 @@ export const addProduct = async (
   next: NextFunction
 ) => {
   try {
+    console.log(req.body);
     const imageUrls: string[] = [];
 
     let uploadPromises: Promise<void>[] | undefined;
@@ -68,7 +70,7 @@ export const addProduct = async (
 
     const response: ApiResponse = {
       statusCode: 1,
-      message: "Product created successfully",
+      message: `Product ${createdProduct.name} created successfully`,
     };
     res.status(200).json({ status: response, product: createdProduct });
   } catch (err) {
@@ -190,7 +192,7 @@ export const productUpdate = async (
     const updatedProduct = await updateProduct(product, productId);
     const response: ApiResponse = {
       statusCode: 1,
-      message: "Product update successfully",
+      message: `Product id ${updatedProduct.id} update successfully`,
     };
 
     return res.status(200).json({
@@ -215,6 +217,27 @@ export const desProduct = async (
       message: "Product delete successfully",
     };
     res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateStatusProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id);
+    const status = req.body.status;
+    const product = await updateStatusProductService(id, status);
+    const response: ApiResponse = {
+      statusCode: 1,
+      message: `${product.name} ${
+        product.status == 1 ? "activity" : "pause"
+      } successfully`,
+    };
+    res.status(200).json({ status: response });
   } catch (error) {
     next(error);
   }

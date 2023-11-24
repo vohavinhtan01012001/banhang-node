@@ -8,6 +8,7 @@ class Promotion extends Model {
   public startDate!: Date | null;
   public endDate!: Date | null;
   public status!: number;
+  public Products!: [object] | undefined;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;

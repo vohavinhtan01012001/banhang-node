@@ -5,6 +5,8 @@ import {
   createPromotionService,
   deletePromotionService,
   getAllPromotionService,
+  getListAddProductService,
+  getProductListOfPromotion,
   updatePromotionService,
   updateStatusPromotionService,
 } from "../services/promotionService";
@@ -107,13 +109,42 @@ export const addProductInPromotion = async (
 ) => {
   try {
     const checkList: any[] = req.body;
+    console.log(checkList);
     const id = parseInt(req.params.id);
-    await addPromotionProService(id, checkList);
+    const { promotion, product } = await addPromotionProService(id, checkList);
     const response: ApiResponse = {
       statusCode: 1,
-      message: "Promotion add Product successfully",
+      message: `Promotion ${promotion.title} add Product successfully`,
     };
-    res.status(200).json(response);
+    res.status(200).json({ status: response, product: product });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getListProductPro = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const promotionId = parseInt(req.params.id);
+    const getListProduct = await getProductListOfPromotion(promotionId);
+    res.status(200).json({ product: getListProduct });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getListAddProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const promotionId = parseInt(req.params.id);
+    const getListProduct = await getListAddProductService(promotionId);
+    res.status(200).json({ product: getListProduct });
   } catch (error) {
     next(error);
   }

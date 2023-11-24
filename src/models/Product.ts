@@ -17,6 +17,7 @@ class Product extends Model {
   public image3!: string;
   public image4!: string;
   public categoryId!: number; // Thêm cột categoryId để đại diện cho mối quan hệ một-nhiều
+  public promotionId!: number;
 
   public readonly created_at!: Date;
   public readonly last_updated!: Date;

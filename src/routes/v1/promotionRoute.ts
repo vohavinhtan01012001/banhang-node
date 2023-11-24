@@ -4,6 +4,8 @@ import {
   addProductInPromotion,
   addPromotion,
   desPromotion,
+  getListAddProduct,
+  getListProductPro,
   listPromotion,
   updatePromotion,
   updateStatusPromotion,
@@ -33,9 +35,11 @@ promotionRouter.patch(
   updatePromotion
 );
 
-promotionRouter.patch("/update-product/:id", addProductInPromotion); //test
+promotionRouter.patch("/update-product/:id", addProductInPromotion);
 
 promotionRouter.delete("/delete/:id", desPromotion);
+promotionRouter.get("/get-product-promotion/:id", getListProductPro);
+promotionRouter.get("/get-allproduct/:id", getListAddProduct);
 
 export default promotionRouter;
 
@@ -209,6 +213,83 @@ export default promotionRouter;
  *         schema:
  *           type: integer
  *         description: ID of the Promotion to get
+ *     responses:
+ *       "201":
+ *         description: OK
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+/**
+ * @swagger
+ * /v1/promotion/get-product-promotion/{id}:
+ *   get:
+ *     summary: get all product of promotion
+ *     tags: [Promotion]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the promotion to get
+ *     responses:
+ *       "201":
+ *         description: OK
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+/**
+ * @swagger
+ * /v1/promotion/get-allproduct/{id}:
+ *   get:
+ *     summary: get all product add promotion
+ *     tags: [Promotion]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the promotion to get
+ *     responses:
+ *       "201":
+ *         description: OK
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+/**
+ * @swagger
+ * /v1/promotion/update-product/{id}:
+ *   patch:
+ *     summary: update the product in promotion
+ *     tags: [Promotion]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the promotion to get
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *          schema:
+ *             type: object
+ *             properties: any[]
+ *             example:
+ *               "0": 1
+ *               "1": 2
+ *               "2": 3
  *     responses:
  *       "201":
  *         description: OK

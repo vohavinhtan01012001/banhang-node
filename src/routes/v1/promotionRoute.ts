@@ -3,6 +3,7 @@ import validateRequest from "../../middleware/validateRequest";
 import {
   addProductInPromotion,
   addPromotion,
+  desProductInPromotion,
   desPromotion,
   getListAddProduct,
   getListProductPro,
@@ -40,6 +41,7 @@ promotionRouter.patch("/update-product/:id", addProductInPromotion);
 promotionRouter.delete("/delete/:id", desPromotion);
 promotionRouter.get("/get-product-promotion/:id", getListProductPro);
 promotionRouter.get("/get-allproduct/:id", getListAddProduct);
+promotionRouter.patch("/delete-product/:id", desProductInPromotion);
 
 export default promotionRouter;
 
@@ -294,6 +296,28 @@ export default promotionRouter;
  *       "201":
  *         description: OK
  *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+
+/**
+ * @swagger
+ * /v1/promotion/delete-product/{id}:
+ *   patch:
+ *     summary: update promotionId product in promotion
+ *     tags: [Promotion]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the promotion to get
+ *     responses:
+ *       "201":
+ *         description: OK
  *
  *       "400":
  *         description:  Bad Request

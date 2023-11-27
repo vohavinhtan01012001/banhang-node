@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelizeConnection from "../db/connection";
+import Product from "./Product";
 
 class Promotion extends Model {
   public id!: number;
@@ -8,7 +9,7 @@ class Promotion extends Model {
   public startDate!: Date | null;
   public endDate!: Date | null;
   public status!: number;
-  public Products!: [object] | undefined;
+  public Products!: Product[] | undefined;
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;

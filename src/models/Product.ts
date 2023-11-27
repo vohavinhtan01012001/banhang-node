@@ -18,7 +18,7 @@ class Product extends Model {
   public image4!: string;
   public categoryId!: number; // Thêm cột categoryId để đại diện cho mối quan hệ một-nhiều
   public promotionId!: number;
-
+  public Promotion!: Promotion | undefined;
   public readonly created_at!: Date;
   public readonly last_updated!: Date;
 }
@@ -108,6 +108,7 @@ Product.init(
 );
 // Define the association
 Product.belongsTo(Category, { foreignKey: "categoryId", targetKey: "id" });
+Product.belongsTo(Promotion, { foreignKey: "promotionId", targetKey: "id" });
 Category.hasMany(Product, { foreignKey: "categoryId", sourceKey: "id" });
 Promotion.hasMany(Product, { foreignKey: "promotionId", sourceKey: "id" });
 

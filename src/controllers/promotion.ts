@@ -1,8 +1,10 @@
 import { ApiResponse } from "customDefinition";
 import { NextFunction, Request, Response } from "express";
+import Product from "../models/Product";
 import {
   addPromotionProService,
   createPromotionService,
+  deleteProductInPromotionService,
   deletePromotionService,
   getAllPromotionService,
   getListAddProductService,
@@ -145,6 +147,24 @@ export const getListAddProduct = async (
     const promotionId = parseInt(req.params.id);
     const getListProduct = await getListAddProductService(promotionId);
     res.status(200).json({ product: getListProduct });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const desProductInPromotion = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id);
+    const productData: Product = await deleteProductInPromotionService(id);
+    const response: ApiResponse = {
+      statusCode: 1,
+      message: `${productData.name} has been removed from promotion`,
+    };
+    res.status(200).json(response);
   } catch (error) {
     next(error);
   }

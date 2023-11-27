@@ -1,9 +1,17 @@
 import Product from "../models/Product";
 import Category from "../models/Category";
+import { CreateProductType, UpdateProductType } from "productType";
+import { addPromotionProService } from "./promotionService";
+import Promotion from "../models/Promotion";
 
-export const createProduct = async (payload: any) => {
+export const createProduct = async (
+  payload: CreateProductType
+): Promise<Product> => {
   try {
-    const product = await Product.create(payload);
+    const product = await Product.create({
+      ...payload,
+      priceReduced: payload.price,
+    });
     return product;
   } catch (error) {
     console.error("Error creating product:", error);
@@ -12,7 +20,7 @@ export const createProduct = async (payload: any) => {
 };
 export const getAllProduct = async () => {
   const product = await Product.findAll({
-    include: [{ model: Category }],
+    include: [{ model: Category }, { model: Promotion }],
   });
   return product;
 };
@@ -31,19 +39,50 @@ export const getByIdProduct = async (productId: number) => {
   return product;
 };
 
-export const updateProduct = async (product: any, id: number) => {
-  if (!product) {
-    throw new Error("Please provide product data to update");
+export const updatePriceReduced = async (id: number) => {
+  try {
+    if (!id) throw new Error("Product not found");
+    const product = await Product.findByPk(id, {
+      include: [{ model: Promotion }],
+    });
+    if (!product) throw new Error("Product not found");
+    if (product.promotionId == null) {
+      await Product.update(
+        { priceReduced: product.price },
+        { where: { id: id } }
+      );
+    } else {
+      const discount: number = Number(product.Promotion.discount);
+      const price: number = Number(product.price);
+      const value: number = (product.price * discount) / 100;
+      const priceRedu: number = price - value;
+      await Product.update({ priceReduced: priceRedu }, { where: { id: id } });
+    }
+    const productUpdate = await Product.findByPk(id);
+    return productUpdate;
+  } catch (error) {
+    throw new Error(error);
   }
-  const productById = await Product.findOne({ where: { id: id } });
-  if (!productById) {
-    throw new Error("Product not found");
+};
+
+export const updateProduct = async (
+  product: UpdateProductType,
+  id: number
+): Promise<Product> => {
+  try {
+    if (!product) {
+      throw new Error("Please provide product data to update");
+    }
+    const productById = await Product.findOne({ where: { id: id } });
+    if (!productById) {
+      throw new Error("Product not found");
+    }
+    await Product.update({ ...product }, { where: { id: id } });
+    const updatedProductData: Product = await updatePriceReduced(id);
+    return updatedProductData;
+  } catch (error) {
+    throw new Error(error);
   }
-  await Product.update(product, {
-    where: { id: id },
-  });
-  const updatedProductData = { ...product, id: id };
-  return updatedProductData;
 };
 
 export const deleteProduct = async (productId: number) => {

@@ -204,3 +204,20 @@ export const getListAddProductService = async (promotionId: number) => {
     throw error;
   }
 };
+
+export const deleteProductInPromotionService = async (
+  productId: number
+): Promise<Product> => {
+  const product = await Product.findByPk(productId);
+  if (!product) {
+    throw new Error("Product not found");
+  }
+  await Product.update(
+    { promotionId: null },
+    {
+      where: { id: productId },
+    }
+  );
+  const productData: Product = await Product.findByPk(productId);
+  return productData;
+};

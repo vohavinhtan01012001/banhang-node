@@ -41,11 +41,28 @@ export const updateStatusPromotionService = async (
         { status: status },
         { where: { id: promotionId } }
       );
+
       const promotion = await Promotion.findOne({
         where: { id: promotionId },
+        include: [{ model: Product }],
       });
       if (!promotion) {
         throw new Error("Promotion not found after update");
+      }
+      if (promotion.Products.length > 0) {
+        for (const product of promotion.Products) {
+          const discount: number = Number(promotion.discount);
+          const price: number = Number(product.price);
+          const value: number = (product.price * discount) / 100;
+          const priceRedu: number = price - value;
+          await Product.update(
+            {
+              promotionId: promotionId,
+              priceReduced: promotion.status == 1 ? priceRedu : price,
+            },
+            { where: { id: product.id } }
+          );
+        }
       }
       return promotion;
     }
@@ -147,7 +164,10 @@ export const addPromotionProService = async (
         const value: number = (product.price * discount) / 100;
         const priceRedu: number = price - value;
         await Product.update(
-          { promotionId: promotionId, priceReduced: priceRedu },
+          {
+            promotionId: promotionId,
+            priceReduced: promotion.status == 1 ? priceRedu : price,
+          },
           { where: { id: productId } }
         );
       }
@@ -220,4 +240,20 @@ export const deleteProductInPromotionService = async (
   );
   const productData: Product = await Product.findByPk(productId);
   return productData;
+};
+
+export const searchPromotionService = async (title: string) => {
+  try {
+    const searchTerm = title.toLowerCase();
+    const promotions = await Promotion.findAll({
+      include: [{ model: Product }],
+    });
+    const foundPromotions = promotions.filter(promotion =>
+      promotion.title.toLowerCase().includes(searchTerm)
+    );
+
+    return foundPromotions;
+  } catch (error) {
+    return [];
+  }
 };

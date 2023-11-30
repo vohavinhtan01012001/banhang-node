@@ -99,3 +99,20 @@ export const desCategory = async (
     next(error);
   }
 };
+
+//client
+export const listCategoryClient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const categories = await getAllCategory();
+    res.status(200).json({
+      category: categories,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+

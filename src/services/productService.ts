@@ -4,6 +4,7 @@ import { CreateProductType, UpdateProductType } from "productType";
 import { addPromotionProService } from "./promotionService";
 import Promotion from "../models/Promotion";
 
+//admin
 export const createProduct = async (
   payload: CreateProductType
 ): Promise<Product> => {
@@ -123,4 +124,40 @@ export const updateStatusProductService = async (
   } catch (error) {
     throw error;
   }
+};
+
+export const searchProductService = async (name: string) => {
+  try {
+    const searchTerm = name.toLowerCase();
+    const products = await Product.findAll({
+      include: [{ model: Category }, { model: Promotion }],
+    });
+    const foundProducts = products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm)
+    );
+
+    return foundProducts;
+  } catch (error) {
+    return [];
+  }
+};
+
+//client
+export const getAllProductPageHomeService = async () => {
+  const product = await Product.findAll({
+    where: { status: 1 },
+    include: [{ model: Category }, { model: Promotion }],
+    limit: 8,
+  });
+  return product;
+};
+
+export const getListProductOfCategoryService = async (
+  id: number
+): Promise<Product[]> => {
+  const product = await Product.findAll({
+    where: { status: 1, categoryId: id },
+    include: [{ model: Category }, { model: Promotion }],
+  });
+  return product;
 };

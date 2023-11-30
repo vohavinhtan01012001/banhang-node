@@ -4,7 +4,10 @@ import {
   createProduct,
   deleteProduct,
   getAllProduct,
+  getAllProductPageHomeService,
   getByIdProduct,
+  getListProductOfCategoryService,
+  searchProductService,
   updateStatusProductService,
 } from "../services/productService";
 import { ApiResponse } from "customDefinition";
@@ -12,7 +15,9 @@ import { v2 as cloudinary } from "cloudinary";
 import Product from "../models/Product";
 import { updateProduct } from "../services/productService";
 import fs from "fs";
+import { getByIdCategory } from "../services/categoryService";
 
+//admin
 export const addProduct = async (
   req: Request,
   res: Response,
@@ -216,7 +221,7 @@ export const desProduct = async (
       statusCode: 1,
       message: "Product delete successfully",
     };
-    res.status(200).json(response);
+    return res.status(200).json(response);
   } catch (error) {
     next(error);
   }
@@ -237,8 +242,56 @@ export const updateStatusProduct = async (
         product.status == 1 ? "activity" : "pause"
       } successfully`,
     };
-    res.status(200).json({ status: response });
+    return res.status(200).json({ status: response });
   } catch (error) {
     next(error);
+  }
+};
+
+export const searchProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const name = req.body.name;
+    const product = await searchProductService(name);
+    return res.status(200).json({ product: product });
+  } catch (err) {
+    next(err);
+  }
+};
+
+//client
+export const listProductClientHome = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const products = await getAllProductPageHomeService();
+    return res.status(200).json({
+      product: products,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const listProductOfCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id);
+    const products = await getListProductOfCategoryService(id);
+    const categoryById = await getByIdCategory(id);
+    return res.status(200).json({
+      product: products,
+      category: categoryById,
+    });
+  } catch (err) {
+    next(err);
   }
 };

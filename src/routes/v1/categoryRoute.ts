@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validateRequest } from "../../middleware";
+import { isAdmin, validateRequest } from "../../middleware";
 import {
   createCategorySchema,
   updateCategorySchema,
@@ -10,26 +10,33 @@ import {
   categoryUpdate,
   desCategory,
   listCategory,
+  listCategoryClient,
 } from "../../controllers/category";
 
 const categoryRouter = Router();
 
 categoryRouter.post(
   "/add-category",
+  isAdmin,
   validateRequest(createCategorySchema),
   addCategory
 );
-categoryRouter.get("/get-all", listCategory);
+categoryRouter.get("/get-all", isAdmin, listCategory);
 
-categoryRouter.get("/:id", categoryById);
+categoryRouter.get("/:id", isAdmin, categoryById);
 
 categoryRouter.patch(
   "/update-category/:id",
+  isAdmin,
   validateRequest(updateCategorySchema),
   categoryUpdate
 );
 
-categoryRouter.delete("/delete/:id", desCategory);
+categoryRouter.delete("/delete/:id", isAdmin, desCategory);
+
+//client
+categoryRouter.get("/client/get-all", listCategoryClient);
+categoryRouter.get("/client/get-byid/:id", categoryById);
 
 export default categoryRouter;
 
@@ -155,6 +162,44 @@ export default categoryRouter;
  * /v1/category/delete/{id}:
  *   delete:
  *     summary: delete a category
+ *     tags: [Category]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the category to get
+ *     responses:
+ *       "201":
+ *         description: OK
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+
+/**
+ * @swagger
+ * /v1/category/client/get-all:
+ *   get:
+ *     summary: get all categories of collection
+ *     tags: [Category]
+ *     responses:
+ *       "201":
+ *         description: OK
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+/**
+ * @swagger
+ * /v1/category/get-byid/{id}:
+ *   get:
+ *     summary: get by id a category
  *     tags: [Category]
  *     parameters:
  *       - name: id

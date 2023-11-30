@@ -1,5 +1,6 @@
 import { Router } from "express";
 import validateRequest from "../../middleware/validateRequest";
+import isAdmin from "../../middleware/isAdmin";
 import {
   addProductInPromotion,
   addPromotion,
@@ -8,6 +9,7 @@ import {
   getListAddProduct,
   getListProductPro,
   listPromotion,
+  searchPromotion,
   updatePromotion,
   updateStatusPromotion,
 } from "../../controllers/promotion";
@@ -21,27 +23,31 @@ const promotionRouter = Router();
 promotionRouter.post(
   "/add-promotion",
   validateRequest(createPromotionSchema),
+  isAdmin,
   addPromotion
 );
 
 promotionRouter.get("/get-all", listPromotion);
 promotionRouter.patch(
   "/update-status/:id",
+  isAdmin,
   validateRequest(updateStatusPromotionSchema),
   updateStatusPromotion
 );
 promotionRouter.patch(
   "/update-promotion/:id",
+  isAdmin,
   validateRequest(updatePromotionSchema),
   updatePromotion
 );
 
-promotionRouter.patch("/update-product/:id", addProductInPromotion);
+promotionRouter.patch("/update-product/:id", isAdmin, addProductInPromotion);
 
-promotionRouter.delete("/delete/:id", desPromotion);
-promotionRouter.get("/get-product-promotion/:id", getListProductPro);
-promotionRouter.get("/get-allproduct/:id", getListAddProduct);
-promotionRouter.patch("/delete-product/:id", desProductInPromotion);
+promotionRouter.delete("/delete/:id", isAdmin, desPromotion);
+promotionRouter.get("/get-product-promotion/:id", isAdmin, getListProductPro);
+promotionRouter.get("/get-allproduct/:id", isAdmin, getListAddProduct);
+promotionRouter.patch("/delete-product/:id", isAdmin, desProductInPromotion);
+promotionRouter.patch("/search", isAdmin, searchPromotion);
 
 export default promotionRouter;
 
@@ -300,7 +306,6 @@ export default promotionRouter;
  *       "400":
  *         description:  Bad Request
  */
-
 
 /**
  * @swagger

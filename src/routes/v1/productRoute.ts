@@ -3,36 +3,38 @@ import {
   addProduct,
   desProduct,
   listProduct,
+  listProductClientHome,
+  listProductOfCategory,
   productById,
   productUpdate,
+  searchProduct,
   updateStatusProduct,
 } from "../../controllers/product";
-import {
-  createProductSchema,
-  updateProductSchema,
-  updateStatusProductSchema,
-} from "../../validation/product";
+import { updateStatusProductSchema } from "../../validation/product";
 import validateRequest from "../../middleware/validateRequest";
 import multer from "multer";
+import isAdmin from "../../middleware/isAdmin";
 
 const productRouter = Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+
+//admin
 productRouter.post(
   "/add-product",
+  isAdmin,
   upload.fields([
     { name: "image1", maxCount: 1 },
     { name: "image2", maxCount: 1 },
     { name: "image3", maxCount: 1 },
     { name: "image4", maxCount: 1 },
   ]),
-  /* validateRequestProduct(createProductSchema), */
   addProduct
 );
 
-productRouter.get("/get-all", listProduct);
+productRouter.get("/get-all", isAdmin, listProduct);
 
-productRouter.get("/showById/:id", productById);
+productRouter.get("/showById/:id", isAdmin, productById);
 
 productRouter.patch(
   "/update-product/:id",
@@ -42,15 +44,22 @@ productRouter.patch(
     { name: "image3", maxCount: 1 },
     { name: "image4", maxCount: 1 },
   ]),
+  isAdmin,
   productUpdate
 );
 
-productRouter.delete("/delete/:id", desProduct);
+productRouter.delete("/delete/:id", isAdmin, desProduct);
 productRouter.patch(
   "/update-status/:id",
   validateRequest(updateStatusProductSchema),
+  isAdmin,
   updateStatusProduct
 );
+
+productRouter.patch("/search", isAdmin, searchProduct);
+//client
+productRouter.get("/client/get-home", listProductClientHome);
+productRouter.get("/client/get-collection/:id", listProductOfCategory);
 
 export default productRouter;
 
@@ -249,9 +258,71 @@ export default productRouter;
 
 /**
  * @swagger
+ * /v1/product/search:
+ *   patch:
+ *     summary: search product
+ *     tags: [Product]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: string
+ *             required:
+ *               - name
+ *             example:
+ *               name: "Short"
+ *     responses:
+ *       "201":
+ *         description: OK
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+/**
+ * @swagger
  * /v1/product/delete/{id}:
  *   delete:
  *     summary: delete a product
+ *     tags: [Product]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the product to get
+ *     responses:
+ *       "201":
+ *         description: OK
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+/**
+ * @swagger
+ * /v1/product/client/get-home:
+ *   get:
+ *     summary: get list product page home
+ *     tags: [Product]
+ *     responses:
+ *       "201":
+ *         description: OK
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+/**
+ * @swagger
+ * /v1/product/client/get-collection/{id}:
+ *   get:
+ *     summary: get list product from collection
  *     tags: [Product]
  *     parameters:
  *       - name: id

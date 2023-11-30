@@ -9,6 +9,7 @@ import {
   getAllPromotionService,
   getListAddProductService,
   getProductListOfPromotion,
+  searchPromotionService,
   updatePromotionService,
   updateStatusPromotionService,
 } from "../services/promotionService";
@@ -167,5 +168,19 @@ export const desProductInPromotion = async (
     res.status(200).json(response);
   } catch (error) {
     next(error);
+  }
+};
+
+export const searchPromotion = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const title = req.body.title;
+    const promotion = await searchPromotionService(title);
+    return res.status(200).json({ promotion: promotion });
+  } catch (err) {
+    next(err);
   }
 };

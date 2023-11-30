@@ -6,7 +6,7 @@ import {
   validatePassword,
 } from "../services/userService";
 import { NextFunction, Request, Response } from "express";
-import { omit } from "lodash";
+import { get, omit } from "lodash";
 import { sign } from "../util/jwt";
 import { generateOTP, verifyOTP } from "../util/otp";
 import { sendOTP } from "../helpers/mailHelper";
@@ -38,39 +38,39 @@ export const registerUser = async (
   }
 };
 
-  export const loginUser = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const { email, password } = req.body;
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, password } = req.body;
 
-      const user = await findOneUser({ email });
-      if (!user) {
-        throw new ApiError(400, "Email id is incorrect");
-      }
-
-      const validPassword = await validatePassword(user.email, password);
-      if (!validPassword) {
-        throw new ApiError(400, "Password is incorrect");
-      }
-
-      const userData = omit(user?.toJSON(), omitData);
-      const accessToken = sign({ ...userData });
-      const apiResponse: ApiResponse = {
-        statusCode: 1,
-        message: "Login successful",
-      };
-      return res.status(200).json({
-        user: userData,
-        accessToken: accessToken,
-        ...apiResponse,
-      });
-    } catch (err) {
-      next(err);
+    const user = await findOneUser({ email });
+    if (!user) {
+      throw new ApiError(400, "Email id is incorrect");
     }
-  };
+
+    const validPassword = await validatePassword(user.email, password);
+    if (!validPassword) {
+      throw new ApiError(400, "Password is incorrect");
+    }
+
+    const userData = omit(user?.toJSON(), omitData);
+    const accessToken = sign({ ...userData });
+    const apiResponse: ApiResponse = {
+      statusCode: 1,
+      message: "Login successful",
+    };
+    return res.status(200).json({
+      user: userData,
+      accessToken: accessToken,
+      ...apiResponse,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const forgotPassword = async (
   req: Request,
@@ -132,6 +132,26 @@ export const resetPassword = async (
       msg: updated[0] ? "Password reseted successfully" : "Failed to reset",
       error: false,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const checkAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user: any = get(req, "user");
+    if (user.role !== 1) {
+      throw new Error("Access not granted");
+    }
+    const response: ApiResponse = {
+      statusCode: 1,
+      message: "Check admin successfully",
+    };
+    res.status(200).json({ status: response });
   } catch (err) {
     next(err);
   }

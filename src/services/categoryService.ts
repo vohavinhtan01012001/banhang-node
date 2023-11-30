@@ -56,3 +56,4 @@ export const deleteCategory = async (categoryId: number) => {
     where: { id: categoryId },
   });
 };
+

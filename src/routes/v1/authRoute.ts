@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { validateRequest } from "../../middleware";
+import { isAdmin, validateRequest } from "../../middleware";
 import {
+  checkAdmin,
   forgotPassword,
   loginUser,
   registerUser,
@@ -13,6 +14,7 @@ authRouter.post("/register", validateRequest(registerSchema), registerUser);
 authRouter.post("/login", validateRequest(loginSchema), loginUser);
 authRouter.post("/forgot-password", forgotPassword);
 authRouter.post("/reset-password", resetPassword);
+authRouter.get("/check-admin", checkAdmin);
 
 export default authRouter;
 

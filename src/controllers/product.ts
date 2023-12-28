@@ -3,19 +3,28 @@ import { ApiError } from "../util/ApiError";
 import {
   createProduct,
   deleteProduct,
-  getAllProduct,
+  detailProductAndCategoryService,
+  filterCategoryAndSizeAndGenderAndPriceService,
+  getAllProductByIdProductGroup,
+  getAllProductGroup,
   getAllProductPageHomeService,
   getByIdProduct,
+  getCategoryAndSizeService,
   getListProductOfCategoryService,
+  getProductFavouriteService,
+  getRandomProductsByGenderService,
+  searchProductClientService,
   searchProductService,
+  showCartService,
   updateStatusProductService,
 } from "../services/productService";
-import { ApiResponse } from "customDefinition";
+import { ApiResponse, customRequest } from "customDefinition";
 import { v2 as cloudinary } from "cloudinary";
 import Product from "../models/Product";
 import { updateProduct } from "../services/productService";
 import fs from "fs";
 import { getByIdCategory } from "../services/categoryService";
+import Category from "../models/Category";
 
 //admin
 export const addProduct = async (
@@ -83,13 +92,29 @@ export const addProduct = async (
   }
 };
 
-export const listProduct = async (
+export const listProductGroup = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const products = await getAllProduct();
+    const products = await getAllProductGroup();
+    res.status(200).json({
+      product: products,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const showProductGroupById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = parseInt(req.params.id);
+    const products = await getAllProductByIdProductGroup(id);
     res.status(200).json({
       product: products,
     });
@@ -293,5 +318,123 @@ export const listProductOfCategory = async (
     });
   } catch (err) {
     next(err);
+  }
+};
+
+export const detailProductAndCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = Number(req.params.id);
+    const nameCategory: string = req.params.slug;
+    const { product, category, productGroup, listSize, productList } =
+      await detailProductAndCategoryService(id, nameCategory);
+    return res.status(200).json({
+      product: product,
+      category: category,
+      productGroup: productGroup,
+      listSize: listSize,
+      productList: productList,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const searchProductClient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const name = req.body.name;
+    const product = await searchProductClientService(name);
+    return res.status(200).json({ product: product });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const showCartClient = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const listCart = req.body.listCart;
+    const {
+      listProductCart,
+      sumPriceCart,
+    }: { listProductCart: any[]; sumPriceCart: number } = await showCartService(
+      listCart
+    );
+    console.log(listProductCart);
+    return res
+      .status(200)
+      .json({ listCart: listProductCart, sumPrice: sumPriceCart });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const showProductFavourite = async (
+  req: customRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userId = parseInt(req.user.id);
+    const uniqueProducts = await getProductFavouriteService(userId);
+    return res.status(200).json({ productList: uniqueProducts });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const showCategoryAndSize = async (
+  req: customRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { category, size, minPrice, maxPrice } =
+      await getCategoryAndSizeService();
+    return res.status(200).json({ category, size, minPrice, maxPrice });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const showFilterProduct = async (
+  req: customRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      category,
+      gender,
+      size,
+      priceMin,
+      priceMax,
+    }: {
+      category: number | 0;
+      size: number | 0;
+      gender: number | 0;
+      priceMin: number;
+      priceMax: number;
+    } = req.body;
+    const products = await filterCategoryAndSizeAndGenderAndPriceService({
+      category,
+      gender,
+      size,
+      priceMin,
+      priceMax,
+    });
+    return res.status(200).json({ products: products });
+  } catch (error) {
+    next(error);
   }
 };

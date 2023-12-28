@@ -1,14 +1,55 @@
-import nodemailer from "nodemailer";
+import nodemailer, {
+  Transport,
+  TransportOptions,
+  Transporter,
+} from "nodemailer";
 import { emailConfig } from "../config/config";
 import { forgotPasswordMailTemplate, mailTemplate } from "./mailTemplate";
+import { OAuth2Client } from "google-auth-library";
+import Mail from "nodemailer/lib/mailer";
 
-const transporter = nodemailer.createTransport({
-  service: emailConfig.emailService,
-  auth: {
-    user: emailConfig.emailUser,
-    pass: emailConfig.emailPassword,
-  },
+const myOAuth2Client = new OAuth2Client(
+  emailConfig.clientId,
+  emailConfig.clientSecret
+);
+
+myOAuth2Client.setCredentials({
+  refresh_token: emailConfig.refreshToken,
 });
+
+const accessToken = async () => {
+  const myAccessTokenObject = await myOAuth2Client.getAccessToken();
+  const myAccessToken = myAccessTokenObject?.token;
+  return myAccessToken;
+};
+
+/* interface TransporterOptions {
+  service: string;
+  auth: {
+    type: string;
+    user: string;
+    clientId: string;
+    clientSecret: string;
+    refreshToken: string;
+    accessToken: () => Promise<string>;
+    name: string;
+  };
+} */
+
+const transporterOptions: any = {
+  service: "Gmail",
+  auth: {
+    type: "OAuth2",
+    user: emailConfig.emailAddress,
+    clientId: emailConfig.clientId,
+    clientSecret: emailConfig.clientSecret,
+    refreshToken: emailConfig.refreshToken,
+    accessToken: accessToken,
+    name: "Shop Sóc Xanh",
+  },
+};
+
+export const transporter: Mail = nodemailer.createTransport(transporterOptions);
 
 export const sendOTP = (email: string, otp: string) => {
   return sendMail({
@@ -17,6 +58,7 @@ export const sendOTP = (email: string, otp: string) => {
     subject: "OTP Verification",
   });
 };
+
 export const sendMail = (exports.sendMail = function (details: {
   to: string;
   subject: string;
@@ -37,7 +79,7 @@ export const sendMail = (exports.sendMail = function (details: {
   };
 
   return new Promise(function (resolve, reject) {
-    transporter.sendMail(mailOptions, function (err) {
+    transporter.sendMail(mailOptions, function (err: any) {
       if (err) {
         reject(err);
       } else {

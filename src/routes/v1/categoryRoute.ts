@@ -83,6 +83,8 @@ export default categoryRouter;
  * @swagger
  * /v1/category/get-all:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: get all categories
  *     tags: [Category]
  *     responses:
@@ -98,6 +100,8 @@ export default categoryRouter;
  * @swagger
  * /v1/category/{id}:
  *   get:
+ *      security:
+ *          - bearerAuth: []
  *     summary: Get category by ID
  *     tags: [Category]
  *     parameters:
@@ -118,6 +122,8 @@ export default categoryRouter;
  * @swagger
  * /v1/category/update-category/{id}:
  *   patch:
+ *     security:
+ *          - bearerAuth: []
  *     summary: update category
  *     tags: [Category]
  *     parameters:
@@ -161,6 +167,8 @@ export default categoryRouter;
  * @swagger
  * /v1/category/delete/{id}:
  *   delete:
+ *     security:
+ *          - bearerAuth: []
  *     summary: delete a category
  *     tags: [Category]
  *     parameters:
@@ -179,11 +187,12 @@ export default categoryRouter;
  *         description:  Bad Request
  */
 
-
 /**
  * @swagger
  * /v1/category/client/get-all:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: get all categories of collection
  *     tags: [Category]
  *     responses:
@@ -199,6 +208,8 @@ export default categoryRouter;
  * @swagger
  * /v1/category/get-byid/{id}:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: get by id a category
  *     tags: [Category]
  *     parameters:

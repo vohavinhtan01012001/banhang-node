@@ -2,18 +2,26 @@ import { Router } from "express";
 import {
   addProduct,
   desProduct,
-  listProduct,
+  detailProductAndCategory,
   listProductClientHome,
+  listProductGroup,
   listProductOfCategory,
   productById,
   productUpdate,
   searchProduct,
+  searchProductClient,
+  showCartClient,
+  showCategoryAndSize,
+  showFilterProduct,
+  showProductFavourite,
+  showProductGroupById,
   updateStatusProduct,
 } from "../../controllers/product";
 import { updateStatusProductSchema } from "../../validation/product";
 import validateRequest from "../../middleware/validateRequest";
 import multer from "multer";
 import isAdmin from "../../middleware/isAdmin";
+import requireUser from "../../middleware/requiresUser";
 
 const productRouter = Router();
 const storage = multer.memoryStorage();
@@ -32,7 +40,8 @@ productRouter.post(
   addProduct
 );
 
-productRouter.get("/get-all", isAdmin, listProduct);
+productRouter.get("/get-all", isAdmin, listProductGroup);
+productRouter.get("/product-group/:id", isAdmin, showProductGroupById);
 
 productRouter.get("/showById/:id", isAdmin, productById);
 
@@ -60,13 +69,27 @@ productRouter.patch("/search", isAdmin, searchProduct);
 //client
 productRouter.get("/client/get-home", listProductClientHome);
 productRouter.get("/client/get-collection/:id", listProductOfCategory);
-
+productRouter.get(
+  "/client/get-detailproduct/:slug/:id",
+  detailProductAndCategory
+);
+productRouter.patch("/client/search", searchProductClient);
+productRouter.post("/client/show-cart", showCartClient);
+productRouter.get(
+  "/client/show-productFavourite",
+  requireUser,
+  showProductFavourite
+);
+productRouter.get("/client/get-categoryandsize", showCategoryAndSize);
+productRouter.post("/client/get-filterProduct", showFilterProduct);
 export default productRouter;
 
 /**
  * @swagger
  * /v1/product/add-product:
  *   post:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Create a new product
  *     tags: [Product]
  *     requestBody:
@@ -142,6 +165,8 @@ export default productRouter;
  * @swagger
  * /v1/product/get-all:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: get all products
  *     tags: [Product]
  *     responses:
@@ -157,6 +182,8 @@ export default productRouter;
  * @swagger
  * /v1/product/{id}:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Get product by ID
  *     tags: [Product]
  *     parameters:
@@ -177,6 +204,8 @@ export default productRouter;
  * @swagger
  * /v1/product/update-product/{id}:
  *   patch:
+ *     security:
+ *          - bearerAuth: []
  *     summary: update product
  *     tags: [Product]
  *     parameters:
@@ -285,6 +314,8 @@ export default productRouter;
  * @swagger
  * /v1/product/delete/{id}:
  *   delete:
+ *     security:
+ *          - bearerAuth: []
  *     summary: delete a product
  *     tags: [Product]
  *     parameters:
@@ -331,6 +362,59 @@ export default productRouter;
  *         schema:
  *           type: integer
  *         description: ID of the product to get
+ *     responses:
+ *       "201":
+ *         description: OK
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+/**
+ * @swagger
+ * /v1/product/client/get-detailproduct/{slug}/{id}:
+ *   get:
+ *     summary: get list product from collection
+ *     tags: [Product]
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the product to get
+ *       - name: slug
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Slug of the product to get
+ *     responses:
+ *       "201":
+ *         description: OK
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+/**
+ * @swagger
+ * /v1/product/client/search:
+ *   patch:
+ *     summary: search product
+ *     tags: [Product]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: string
+ *             required:
+ *               - name
+ *             example:
+ *               name: "Short"
  *     responses:
  *       "201":
  *         description: OK

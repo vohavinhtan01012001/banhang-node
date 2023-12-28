@@ -83,7 +83,10 @@ export const updatePromotionService = async (
     if (!id) {
       throw new Error("id not found");
     }
-    const promotionById = await Promotion.findOne({ where: { id: id } });
+    const promotionById = await Promotion.findOne({
+      where: { id: id },
+      include: [Product],
+    });
     if (!promotionById) {
       throw new Error("Promtion not found");
     }
@@ -97,6 +100,22 @@ export const updatePromotionService = async (
       },
       { where: { id: id } }
     );
+
+    if (promotionById.Products.length > 0) {
+      for (const product of promotionById.Products) {
+        const discount: number = Number(payload.discount);
+        const price: number = Number(product.price);
+        const value: number = (product.price * discount) / 100;
+        const priceRedu: number = price - value;
+        await Product.update(
+          {
+            priceReduced: promotionById.status == 1 ? priceRedu : price,
+          },
+          { where: { id: product.id } }
+        );
+      }
+    }
+
     const numberOfAffectedRows = promotion[0];
     if (numberOfAffectedRows > 0) {
       const updatedPromotionData = await Promotion.findOne({
@@ -117,14 +136,23 @@ export const updatePromotionService = async (
 
 export const deletePromotionService = async (promotionId: number) => {
   if (!promotionId) {
-    throw new Error("Please product id to delete");
+    throw new Error("Please Promotion id to delete");
   }
   if (promotionId && isNaN(promotionId)) {
-    throw new Error("Invalid product id");
+    throw new Error("Invalid Promotion id");
   }
-  const promotion = await Promotion.findOne({ where: { id: promotionId } });
+  const promotion = await Promotion.findOne({
+    where: { id: promotionId },
+    include: [Product],
+  });
   if (!promotion) {
-    throw new Error("Product not found");
+    throw new Error("Promotion not found");
+  }
+  for (const product of promotion.Products) {
+    await Product.update(
+      { priceReduced: product.price },
+      { where: { id: product.id } }
+    );
   }
   return Promotion.destroy({
     where: { id: promotionId },
@@ -233,7 +261,7 @@ export const deleteProductInPromotionService = async (
     throw new Error("Product not found");
   }
   await Product.update(
-    { promotionId: null },
+    { promotionId: null, priceReduced: product.price },
     {
       where: { id: productId },
     }

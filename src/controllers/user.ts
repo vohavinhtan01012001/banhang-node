@@ -1,7 +1,7 @@
 import { findOneUser, updateUserById } from "../services/userService";
 import { NextFunction, Response } from "express";
 import { omit } from "lodash";
-import { customRequest } from "../types/customDefinition";
+import { ApiResponse, customRequest } from "../types/customDefinition";
 import { ApiError } from "../util/ApiError";
 const omitData = ["password"];
 export const updateUser = async (
@@ -40,8 +40,7 @@ export const getUserData = async (
 ) => {
   try {
     return res.status(200).json({
-      data: req.user,
-      error: false,
+      user: req.user,
     });
   } catch (err) {
     next(err);

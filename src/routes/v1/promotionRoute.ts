@@ -62,6 +62,8 @@ export default promotionRouter;
  * @swagger
  * /v1/promotion/add-promotion:
  *   post:
+ *     security:
+ *          - bearerAuth: []
  *     summary: Create a new promotion
  *     tags: [Promotion]
  *     requestBody:
@@ -107,6 +109,8 @@ export default promotionRouter;
  * @swagger
  * /v1/promotion/update-status/{id}:
  *   patch:
+ *     security:
+ *          - bearerAuth: []
  *     summary: update the status of a promotion
  *     tags: [Promotion]
  *     parameters:
@@ -143,6 +147,8 @@ export default promotionRouter;
  * @swagger
  * /v1/promotion/get-all:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: get all promotions
  *     tags: [Promotion]
  *     responses:
@@ -158,6 +164,8 @@ export default promotionRouter;
  * @swagger
  * /v1/promotion/update-promotion/{id}:
  *   patch:
+ *     security:
+ *          - bearerAuth: []
  *     summary: update the promotion
  *     tags: [Promotion]
  *     parameters:
@@ -212,6 +220,8 @@ export default promotionRouter;
  * @swagger
  * /v1/promotion/delete/{id}:
  *   delete:
+ *     security:
+ *          - bearerAuth: []
  *     summary: delete a Promotion
  *     tags: [Promotion]
  *     parameters:
@@ -234,6 +244,8 @@ export default promotionRouter;
  * @swagger
  * /v1/promotion/get-product-promotion/{id}:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: get all product of promotion
  *     tags: [Promotion]
  *     parameters:
@@ -256,6 +268,8 @@ export default promotionRouter;
  * @swagger
  * /v1/promotion/get-allproduct/{id}:
  *   get:
+ *     security:
+ *          - bearerAuth: []
  *     summary: get all product add promotion
  *     tags: [Promotion]
  *     parameters:
@@ -278,6 +292,8 @@ export default promotionRouter;
  * @swagger
  * /v1/promotion/update-product/{id}:
  *   patch:
+ *     security:
+ *          - bearerAuth: []
  *     summary: update the product in promotion
  *     tags: [Promotion]
  *     parameters:
@@ -311,6 +327,8 @@ export default promotionRouter;
  * @swagger
  * /v1/promotion/delete-product/{id}:
  *   patch:
+ *     security:
+ *          - bearerAuth: []
  *     summary: update promotionId product in promotion
  *     tags: [Promotion]
  *     parameters:

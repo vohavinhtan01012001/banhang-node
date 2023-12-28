@@ -27,9 +27,12 @@ export const jwtConfig = {
 
 export const emailConfig = {
   emailService: process.env.EMAIL_SERVICE,
-  emailUser: process.env.EMAIL_USER,
-  emailPassword: process.env.EMAIL_PASS,
-  emailFrom: process.env.EMAIL_FROM,
+  emailUser: process.env.EMAIL_ADDRESS,
+  emailAddress: process.env.EMAIL_ADDRESS,
+  clientSecret: process.env.EMAIL_CLIENT_ID_SECRET,
+  refreshToken: process.env.EMAIL_REFRESH_TOKEN,
+  clientId: process.env.EMAIL_CLIENT_ID,
+  emailFrom: process.env.EMAIL_FORM
 };
 
 export const otpConfig = {

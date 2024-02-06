@@ -4,6 +4,7 @@ import {
   checkAdmin,
   forgotPassword,
   loginUser,
+  registerAdmin,
   registerUser,
   resetPassword,
 } from "../../controllers/auth";
@@ -15,6 +16,7 @@ authRouter.post("/login", validateRequest(loginSchema), loginUser);
 authRouter.post("/forgot-password", forgotPassword);
 authRouter.post("/reset-password", resetPassword);
 authRouter.get("/check-admin", checkAdmin);
+authRouter.post("/register-admin", validateRequest(registerSchema), registerAdmin);
 
 export default authRouter;
 
@@ -30,6 +32,55 @@ export default authRouter;
  * /v1/authorization/register:
  *   post:
  *     summary: Register as a user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - fullname
+ *               - email
+ *               - password
+ *               - address
+ *               - phone
+ *             properties:
+ *               fullname:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Must be unique
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 minLength: 8
+ *                 description: At least one number and one letter
+ *               address:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *             example:
+ *               fullname: "John Doe"
+ *               email: "john.doe@example.com"
+ *               password: "P@ssw0rd"
+ *               address: "123 Main Street"
+ *               phone: "+1234567890"
+ *     responses:
+ *       "201":
+ *         description: Created
+ *
+ *
+ *       "400":
+ *         description:  Bad Request
+ */
+
+/**
+ * @swagger
+ * /v1/authorization/register-admin:
+ *   post:
+ *     summary: Register as a administrator
  *     tags: [Auth]
  *     requestBody:
  *       required: true

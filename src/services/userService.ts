@@ -8,6 +8,13 @@ export const createUser = async (payload: any) => {
   return user;
 };
 
+export const createAdmin = async (payload: any) => {
+  payload.password = encryptSync(payload.password);
+  payload.role = 1;
+  const user = await User.create(payload);
+  return user;
+};
+
 export const getUserById = async (id: number) => {
   const user = await User.findByPk(id, {
     attributes: { exclude: ["password"] },

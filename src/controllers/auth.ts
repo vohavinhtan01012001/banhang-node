@@ -1,4 +1,5 @@
 import {
+  createAdmin,
   createUser,
   findOneUser,
   updateUserById,
@@ -152,6 +153,30 @@ export const checkAdmin = async (
       message: "Check admin successfully",
     };
     res.status(200).json({ status: response });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const registerAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let user = req.body;
+    const userExist = await userExists({
+      email: user.email,
+    });
+    if (userExist) {
+      throw new ApiError(400, "Email is alredy used");
+    }
+    user = await createAdmin(user);
+    const apiResponse: ApiResponse = {
+      statusCode: 1,
+      message: "Admin registered successfully",
+    };
+    return res.status(200).json(apiResponse);
   } catch (err) {
     next(err);
   }

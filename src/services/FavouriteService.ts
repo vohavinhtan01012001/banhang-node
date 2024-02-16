@@ -2,6 +2,7 @@ import { CreateFavouriteType } from "FavouriteType";
 import Favourite from "../models/Favourite";
 import User from "../models/User";
 import ProductGroup from "../models/ProductGroup";
+import Product from "../models/Product";
 
 export const updateFavouriteService = async ({
   productGroupId,
@@ -24,16 +25,29 @@ export const updateFavouriteService = async ({
     const checkFavourite = await Favourite.findOne({
       where: { userId: userId, productGroupId: productGroupId },
     });
+    const productFavourite = await Product.findOne({
+      where: { productGroupId: productGroupId },
+    });
     if (!checkFavourite) {
+      const favouriteValue = productFavourite.favourite + 1;
       await Favourite.create({
         userId: userId,
         productGroupId: productGroupId,
       });
+      await Product.update(
+        { favourite: favouriteValue },
+        { where: { productGroupId: productGroupId } }
+      );
       return true;
     } else {
+      const favouriteValue = productFavourite.favourite - 1;
       await Favourite.destroy({
         where: { id: checkFavourite.id },
       });
+      await Product.update(
+        { favourite: favouriteValue },
+        { where: { productGroupId: productGroupId } }
+      );
       return false;
     }
   } catch (error) {

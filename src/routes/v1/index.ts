@@ -8,7 +8,8 @@ import productRouter from "./productRoute";
 import promotionRouter from "./promotionRoute";
 import sizeRouter from "./sizeRoute";
 import orderRoute from "./orderRoute";
-import favouriteRouter from "./FavouriteRoute";
+import favouriteRouter from "./favouriteRoute";
+import evaluateRouter from "./evaluateRoute";
 
 const appRouter = Router();
 
@@ -49,6 +50,10 @@ const appRoutes = [
   {
     path: "/favourite",
     router: favouriteRouter,
+  },
+  {
+    path: "/evaluate",
+    router: evaluateRouter,
   },
 ];
 

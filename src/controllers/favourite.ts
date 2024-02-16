@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import {
   getFavouriteService,
   updateFavouriteService,
-} from "../services/FavouriteService";
+} from "../services/favouriteService";
 import { ApiResponse, customRequest } from "customDefinition";
 
 export const addFavourite = async (

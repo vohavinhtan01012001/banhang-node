@@ -16,6 +16,7 @@ import Category from "../models/Category";
 import { Request } from "express";
 import qs from "qs"; // Import thư viện qs
 import crypto from "crypto";
+import { showEvaluateOfUser } from "./evaluateService";
 
 //cart = [{id,quantityCart}...]
 export const paymentCodService = async (
@@ -52,8 +53,13 @@ export const paymentCodService = async (
               orderId: createOrder.id,
             });
 
+            //upload số lượt bán của sản phẩm và số lượng sản phẩm
+            const valueSales = product.sales + itemCart.quantityCart;
             await Product.update(
-              { quantity: product.quantity - itemCart.quantityCart },
+              {
+                quantity: product.quantity - itemCart.quantityCart,
+                sales: valueSales,
+              },
               { where: { id: product.id } }
             );
           } else {
@@ -388,8 +394,9 @@ export const getShowOrderOfUser = async (id: number): Promise<Order[]> => {
 };
 
 export const getShowOrderItemOfOrder = async (
-  id: number
-): Promise<OrderItem[]> => {
+  id: number,
+  userId: number
+): Promise<{ check: boolean; newOrderItem: any[] }> => {
   try {
     if (!id) throw new Error("Order not found");
     const findOrderItem = await OrderItem.findOne({ where: { orderId: id } });
@@ -398,9 +405,28 @@ export const getShowOrderItemOfOrder = async (
     }
     const orderItem = await OrderItem.findAll({
       where: { orderId: id },
-      include: [{ model: Product, include: [Category, Size] }],
+      include: [
+        { model: Product, include: [Category, Size] },
+        { model: Order },
+      ],
     });
-    return orderItem;
+    let check: boolean = false;
+    if (orderItem[0].Order.delivery === 2) {
+      check = true;
+    }
+    const showEvaluate = await showEvaluateOfUser(userId);
+
+    const newOrderItem = orderItem.map(item => {
+      let value = 0;
+      for (const evaluate of showEvaluate) {
+        if (item.Product.productGroupId === evaluate.productGroupId) {
+          value = evaluate.rate;
+          break;
+        }
+      }
+      return { ...item.toJSON(), rate: value };
+    });
+    return { check, newOrderItem };
   } catch (error) {
     throw error;
   }

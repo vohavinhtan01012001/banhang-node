@@ -2,6 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import sequelizeConnection from "../db/connection";
 import Order from "./Order";
 import Product from "./Product";
+import Evaluate from "./Evaluate";
 
 class OrderItem extends Model {
   public id!: number;
@@ -11,6 +12,7 @@ class OrderItem extends Model {
   public orderId!: number;
   public productId!: number;
   public Product!: Product;
+  public Order!: Order;
   // timestamps!
   public readonly created_at!: Date;
   public readonly last_updated!: Date;

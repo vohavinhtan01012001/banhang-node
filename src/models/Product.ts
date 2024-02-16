@@ -8,6 +8,7 @@ import Order from "./Order";
 import OrderItem from "./OrderItem";
 import User from "./User";
 import Favourite from "./Favourite";
+import Evaluate from "./Evaluate";
 
 class Product extends Model {
   public id!: number;
@@ -16,6 +17,9 @@ class Product extends Model {
   public price!: number;
   public priceReduced!: number;
   public quantity!: number;
+  public evaluate!: number;
+  public favourite!: number;
+  public sales!: number;
   public size!: string;
   public gender!: number;
   public status!: number;
@@ -85,6 +89,21 @@ Product.init(
     },
     status: {
       type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    evaluate: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    favourite: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    sales: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
     },
@@ -158,6 +177,11 @@ OrderItem.belongsTo(Product, { foreignKey: "productId", targetKey: "id" });
 OrderItem.belongsTo(Order, { foreignKey: "orderId", targetKey: "id" });
 Favourite.belongsTo(User, { foreignKey: "userId", targetKey: "id" });
 Favourite.belongsTo(ProductGroup, {
+  foreignKey: "productGroupId",
+  targetKey: "id",
+});
+Evaluate.belongsTo(User, { foreignKey: "userId", targetKey: "id" });
+Evaluate.belongsTo(ProductGroup, {
   foreignKey: "productGroupId",
   targetKey: "id",
 });

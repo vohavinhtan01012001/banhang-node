@@ -16,6 +16,7 @@ class Order extends Model {
   public vnp_TxnRef!: string;
   public delivery!: number;
   public cancelOrder!: number;
+  public userId!: number;
   // timestamps!
   public readonly created_at!: Date;
   public readonly last_updated!: Date;

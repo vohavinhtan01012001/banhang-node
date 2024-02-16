@@ -1,6 +1,5 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 import sequelizeConnection from "../db/connection";
-import Product from "./Product";
 import User from "./User";
 import ProductGroup from "./ProductGroup";
 

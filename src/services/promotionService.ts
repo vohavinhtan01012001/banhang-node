@@ -5,6 +5,7 @@ import {
 import Promotion from "../models/Promotion";
 import Product from "../models/Product";
 import { Op } from "sequelize";
+import Category from "../models/Category";
 
 export const createPromotionService = async (
   payload: CreatePromotionType
@@ -196,7 +197,7 @@ export const addPromotionProService = async (
             promotionId: promotionId,
             priceReduced: promotion.status == 1 ? priceRedu : price,
           },
-          { where: { id: productId } }
+          { where: { productGroupId: product.productGroupId } }
         );
       }
     }
@@ -220,9 +221,24 @@ export const getProductListOfPromotion = async (promotionId: number) => {
     }
     const getListProduct = await Promotion.findOne({
       where: { id: promotionId },
-      include: [{ model: Product }],
+      include: [
+        {
+          model: Product,
+          include: [{ model: Category }],
+        },
+      ],
     });
-    return getListProduct.Products;
+    const products = getListProduct.Products;
+    const uniqueProductGroupIds = new Set();
+
+    const listProduct = products.reduce((unique, currentProduct) => {
+      if (!uniqueProductGroupIds.has(currentProduct.productGroupId)) {
+        uniqueProductGroupIds.add(currentProduct.productGroupId);
+        unique.push(currentProduct);
+      }
+      return unique;
+    }, []);
+    return listProduct;
   } catch (error) {
     throw error;
   }
@@ -239,14 +255,24 @@ export const getListAddProductService = async (promotionId: number) => {
     if (!checkPromotion) {
       throw new Error("Promotion not found");
     }
-    const getListProduct = await Product.findAll({
+    const products = await Product.findAll({
       where: {
         [Op.or]: [
           { promotionId: { [Op.ne]: promotionId } }, // Lấy các sản phẩm có promotionId khác với promotionId được truyền vào
           { promotionId: null }, // Lấy các sản phẩm với promotionId là null
         ],
       },
+      include: [{ model: Category }],
     });
+    const uniqueProductGroupIds = new Set();
+
+    const getListProduct = products.reduce((unique, currentProduct) => {
+      if (!uniqueProductGroupIds.has(currentProduct.productGroupId)) {
+        uniqueProductGroupIds.add(currentProduct.productGroupId);
+        unique.push(currentProduct);
+      }
+      return unique;
+    }, []);
     return getListProduct;
   } catch (error) {
     throw error;

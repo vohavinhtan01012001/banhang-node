@@ -158,9 +158,10 @@ export const showOrderItemOfOder = async (
   next: NextFunction
 ) => {
   try {
+    const userId = req.user.id;
     const id = parseInt(req.params.id);
-    const orders = await getShowOrderItemOfOrder(id);
-    return res.status(200).json({ orders: orders });
+    const { check, newOrderItem } = await getShowOrderItemOfOrder(id, userId);
+    return res.status(200).json({ orders: newOrderItem, checkRadings: check });
   } catch (error) {
     next(error);
   }
